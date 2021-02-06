@@ -11,7 +11,7 @@ const Login = async (code: string, userInfo: any): Promise<Restful> => {
   try {
     const { session_key, openid, errmsg } = await WXAction.code2Session(code);
     if (isUndef(openid)) {
-      throw new Error(errmsg)
+      throw new Error(errmsg);
     }
     let user = User.build({ ...userInfo, openid });
 
@@ -34,6 +34,26 @@ const Login = async (code: string, userInfo: any): Promise<Restful> => {
 const Retrieve = async (id: string): Promise<Restful> => {
   try {
     const user = await Action.Retrieve__ID(Number(id));
+    if (!user) {
+      return new Restful(1, '账号不存在');
+    }
+    return new Restful(0, '查询成功', user.toJSON());
+  } catch (e) {
+    return new Restful(99, `查询失败, ${e.message}`);
+  }
+};
+
+/**
+ * 通过id查询单个用户
+ * @param { string } id
+ */
+const Retrieve__Code = async (code: string): Promise<Restful> => {
+  try {
+    const { session_key, openid, errmsg } = await WXAction.code2Session(code);
+    if (isUndef(openid)) {
+      throw new Error(errmsg);
+    }
+    const user = await Action.Retrieve__OpenID(openid);
     if (!user) {
       return new Restful(1, '账号不存在');
     }
@@ -75,11 +95,15 @@ const Retrieve__Page = async (
  */
 const Edit = async (user: User): Promise<Restful> => {
   try {
-    const existedUser = await Action.Retrieve__ID(<number>user.id);
-    if (isUndef(existedUser)) {
+    let existedUser = await Action.Retrieve__ID(<number>user.id);
+    if (!existedUser) {
       return new Restful(1, '账号不存在');
     }
-    const newUser = await Action.Update(<User>existedUser, user);
+
+    if (existedUser.role !== user.role && existedUser.role) {
+      return new Restful(2, '角色选中后便不能再次更改');
+    }
+    const newUser = await Action.Update(existedUser, user);
     return new Restful(0, '编辑成功', newUser.toJSON());
   } catch (e) {
     return new Restful(99, `编辑失败, ${e.message}`);
@@ -89,6 +113,7 @@ const Edit = async (user: User): Promise<Restful> => {
 export default {
   Login,
   Retrieve,
+  Retrieve__Code,
   Retrieve__Page,
   Edit
 };
