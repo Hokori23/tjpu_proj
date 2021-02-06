@@ -233,12 +233,13 @@ const JWTKEY = <string>md5Crypto(jwtConfig.key);
 
 const WHITE_LIST = [`${baseURL}/user/login`];
 
-const SpawnJWT = (openid: string) => {
+const SpawnJWT = (openid: string, id: string) => {
   return (
     'Bearer ' +
     jwt.sign(
       {
-        openid
+        openid,
+        id
       },
       JWTKEY
     )
