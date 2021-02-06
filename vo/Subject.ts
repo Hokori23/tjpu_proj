@@ -1,16 +1,17 @@
 import { DataTypes, Model } from 'sequelize';
 import DB from '@database';
 
-class Socket extends Model {
+
+class Subject extends Model {
   public id!: number | null;
-  public openid!: number;
-  public ip!: string;
+  public name!: string;
+  public type!: number | null;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
 
-Socket.init(
+Subject.init(
   {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
@@ -18,41 +19,39 @@ Socket.init(
       autoIncrement: true,
       comment: '自增字段（主键）'
     },
-    openid: {
+    name: {
       type: DataTypes.STRING(255),
-      unique: 'openid',
+      unique: 'name',
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'OpenID不能为空'
+          msg: '课程名不能为空'
         },
         notEmpty: {
-          msg: 'OpenID不能为空'
-        }
+          msg: '课程名不能为空'
+        },
       },
-      comment: 'OpenID'
+      comment: '课程名'
     },
-    ip: {
-      type: DataTypes.STRING(20),
+    type: {
+      type: DataTypes.TINYINT,
       allowNull: false,
       validate: {
         notNull: {
-          msg: 'IP不能为空'
+          msg: '课程类型不能为空'
         },
         notEmpty: {
-          msg: 'IP不能为空'
+          msg: '课程类型不能为空不能为空'
         },
-        len: {
-          args: [7, 15],
-          msg: 'IP长度应为7至15字符'
-        }
+        max: 1,
+        min: 0
       },
-      comment: 'IP'
-    }
+      comment: '课程类型不能为空'
+    },
   },
   {
-    sequelize: DB
+    sequelize: DB,
   }
 );
 
-export default Socket;
+export default Subject;

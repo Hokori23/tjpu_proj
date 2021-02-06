@@ -9,25 +9,32 @@ import DB from '@database';
 
 import { Socket } from '@vo';
 
-interface UserAttributes {
-  id: number | null;
-  openid: number; //OpenID
-  nickName: string; // 用户名*
-  avatarUrl: string; // 头像*
-  country: string | null; // 国家*
-  province: string | null; // 省份*
-  city: string | null; // 城市*
-  gender: number; // 性别*: { 0: 未知; 1: 男性; 2: 女性 }
+class User extends Model {
+  public id!: number | null;
+  public openid!: string;
+  public nickName!: string;
+  public avatarUrl!: string;
+  public country!: string;
+  public province!: string | null;
+  public city!: string | null;
+  public gender!: number; // 性别*: { 0: 未知; 1: 男性; 2: 女性 }
 
-  realName: string | null; // 真实姓名
-  role: number | null; // 身份: { 0: 志愿者; 1: 需求者}
-  grade: string | null; // 年级 如：研一、大一、高一等
+  public realName!: string | null;
+  public role!: number; // 身份: { 0: 未知; 1: 老师; 2: 学生}
+  public grade!: number | null;
 
-  eduType: number; // { 0: 学业辅导; 1: 心理辅导 }
-  options: string; // JSONObject
+  public options!: string; // JSONObject
   /**
    * @description
-   *
+   * // 针对学生的课堂匹配设置
+   * type: number | null // { 0: 学业辅导, 1: 心理辅导 }
+   * subject_id: Array<number> || [] // 已选中的课程标签（每次前端和后端做一个filter并更新字段，保证设置中每个标签的合法性）
+   * days: Array<number> || [] // 匹配时间
+   * hours: Array<number> || [] // 匹配时间
+   * 
+   * 
+   * 
+   * 
    * 学业辅导：
    *   数学
    *   英语
@@ -40,35 +47,16 @@ interface UserAttributes {
    *   青春期心理问题
    *   挫折适应问题
    *
+   * days
+   *
    */
-  socket: Socket;
 
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-class User extends Model implements UserAttributes {
-  public id!: number | null;
-  public openid!: number;
-  public nickName!: string;
-  public avatarUrl!: string;
-  public country!: string;
-  public province!: string | null;
-  public city!: string | null;
-  public gender!: number;
-
-  public realName!: string | null;
-  public role!: number;
-  public grade!: string | null;
-
-  public eduType!: number;
-  public options!: string;
-
+  // TODO: 记得判断是否确定需要这段
   public socket!: Socket;
   public static associations: {
     socket: Association<User, Socket>;
   };
-  
+
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
@@ -164,37 +152,37 @@ User.init(
     },
     role: {
       type: DataTypes.TINYINT.UNSIGNED,
-      // allowNull: false,
-      // validate: {
-      //   max: 1,
-      //   min: 0
-      // },
-      comment: '身份'
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        max: 2,
+        min: 0
+      },
+      comment: '{ 0: 未知, 1: 老师, 2: 学生}'
     },
     grade: {
-      type: DataTypes.STRING(20),
-      // allowNull: false,
-      // validate: {
-      //   notNull: {
-      //     msg: '年级不能为空'
-      //   },
-      //   notEmpty: {
-      //     msg: '年级不能为空'
-      //   }
-      // },
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        notNull: {
+          msg: '年级不能为空'
+        },
+        notEmpty: {
+          msg: '年级不能为空'
+        }
+      },
       comment: '年级'
-    },
-    eduType: {
-      type: DataTypes.TINYINT.UNSIGNED,
-      // allowNull: false,
-      // validate: {
-      //   max: 1,
-      //   min: 0
-      // },
-      comment: '{ 0: 学业辅导; 1: 心理辅导 }'
     },
     options: {
       type: DataTypes.TEXT,
+      allowNull: false,
+      defaultValue: `{
+        "type": null,
+        "subject_id": [],
+        "days": [],
+        "hours": []
+      }`,
       // allowNull: false,
       // validate: {
       //   notNull: {
@@ -208,8 +196,7 @@ User.init(
     }
   },
   {
-    sequelize: DB,
-    tableName: 'user'
+    sequelize: DB
   }
 );
 
