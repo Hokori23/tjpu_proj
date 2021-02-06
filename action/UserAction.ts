@@ -10,11 +10,11 @@ const Create = (user: User): Promise<User> => {
 
 /**
  * 通过openid查询单个用户
- * @param { number } openid
+ * @param { string } openid
  * @param { boolean } safe
  */
 const Retrieve__OpenID = (
-  openid: number,
+  openid: string,
   safe: boolean = true
 ): Promise<User | null> => {
   return User.findOne({

@@ -1,8 +1,12 @@
-import UserAction from './UserAction';
 import WXAction from './WXAction';
+import UserAction from './UserAction';
+import LessonAction from './LessonAction';
+import SubscribeAction from './SubscribeAction';
 
-export { UserAction, WXAction };
+export { WXAction, UserAction, LessonAction, SubscribeAction };
 export default {
+  WX: WXAction,
   User: UserAction,
-  WX: WXAction
+  Lesson: LessonAction,
+  Subscribe: SubscribeAction
 };
