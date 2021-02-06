@@ -8,6 +8,7 @@ class Lesson extends Model {
   public room_id!: string; // 腾讯会议ID
   public subject_id!: number; // 外键 Subject.id
   public title!: string;
+  public content!: string;
   public start_time!: number;
   public end_time!: number;
 
@@ -56,6 +57,19 @@ Lesson.init(
         }
       },
       comment: '课堂标题'
+    },
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: '课堂内容不能为空'
+        },
+        notEmpty: {
+          msg: '课堂内容不能为空'
+        }
+      },
+      comment: '课堂内容'
     },
     start_time: {
       type:DataTypes.INTEGER.UNSIGNED,
