@@ -75,7 +75,7 @@ const Edit = async (lesson: Lesson): Promise<Restful> => {
  */
 const Delete = async (id: number): Promise<Restful> => {
   try {
-    const existedLesson = await Action.Retrieve__ID(id);
+    const existedLesson = await Action.Retrieve__ID(Number(id));
     if (!existedLesson) {
       return new Restful(1, '该课堂不存在');
     }

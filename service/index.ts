@@ -1,6 +1,8 @@
 import UserService from './UserService';
+import LessonService from './LessonService';
 
-export { UserService };
+export { UserService, LessonService };
 export default {
-  User: UserService
+  User: UserService,
+  Lesson: LessonService
 };
