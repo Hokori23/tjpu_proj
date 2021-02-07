@@ -1,15 +1,22 @@
 import moment from 'moment';
 
-import { LessonAction as Action, WXAction } from '@action';
+import { LessonAction as Action, UserAction } from '@action';
 import { Lesson } from '@vo';
 import { Restful, isUndef } from '@utils';
 
 /**
- * 添加课堂
+ * 开设课堂
  * @param { Lesson } lesson
  */
 const Create = async (lesson: Lesson): Promise<Restful> => {
   try {
+    const user = await UserAction.Retrieve__ID(lesson.uid);
+    if (!user) {
+      return new Restful(1, '开设课堂失败, 用户不存在');
+    }
+    if (user.role !== 1) {
+      return new Restful(2, '你不是老师，没有权限开设课堂');
+    }
     return new Restful(
       0,
       `开设课堂成功`,
@@ -58,6 +65,13 @@ const Retrieve = async (
  */
 const Edit = async (lesson: Lesson): Promise<Restful> => {
   try {
+    const user = await UserAction.Retrieve__ID(lesson.uid);
+    if (!user) {
+      return new Restful(1, '编辑课堂信息失败, 用户不存在');
+    }
+    if (user.role !== 1) {
+      return new Restful(2, '你不是老师，没有权限编辑课堂信息');
+    }
     const existedLesson = await Action.Retrieve__ID(<number>lesson.id);
     if (!existedLesson) {
       return new Restful(1, '该课堂不存在');
@@ -79,12 +93,20 @@ const Delete = async (id: number): Promise<Restful> => {
     if (!existedLesson) {
       return new Restful(1, '该课堂不存在');
     }
+
+    const user = await UserAction.Retrieve__ID(existedLesson.uid);
+    if (!user) {
+      return new Restful(2, '删除课堂失败, 用户不存在');
+    }
+    if (user.role !== 1) {
+      return new Restful(3, '你不是老师，没有权限编辑课堂信息');
+    }
     if (moment().isBefore(existedLesson.end_time)) {
-      return new Restful(2, '该课堂还未结束, 不能删除');
+      return new Restful(4, '该课堂还未结束, 不能删除');
     }
     return (await Action.Delete(id)) > 0
       ? new Restful(0, '删除课堂成功')
-      : new Restful(3, '删除课堂失败');
+      : new Restful(5, '删除课堂失败');
   } catch (e) {
     return new Restful(99, `删除课堂失败, ${e.message}`);
   }
