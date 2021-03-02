@@ -2,7 +2,7 @@ import User from './User';
 import Socket from './Socket';
 import Lesson from './Lesson';
 import Subject from './Subject';
-import Subscribe from './Subscribe'
+import Subscribe from './Subscribe';
 
 /**
  * Socket : User
@@ -48,12 +48,13 @@ Subscribe.belongsTo(User, {
   foreignKey: 'uid',
   onUpdate: 'CASCADE',
   onDelete: 'CASCADE'
-})
+});
 Subscribe.belongsTo(Lesson, {
   foreignKey: 'lesson_id',
   onUpdate: 'CASCADE',
   onDelete: 'CASCADE'
-})
+});
+Lesson.hasMany(Subscribe, { sourceKey: 'id', foreignKey: 'lesson_id' });
 
 export { User, Socket, Lesson, Subject, Subscribe };
 export default { User, Socket, Lesson, Subject, Subscribe };

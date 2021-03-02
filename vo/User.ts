@@ -31,10 +31,10 @@ class User extends Model {
    * subject_id: Array<number> || [] // 已选中的课程标签（每次前端和后端做一个filter并更新字段，保证设置中每个标签的合法性）
    * days: Array<number> || [] // 匹配时间
    * hours: Array<number> || [] // 匹配时间
-   * 
-   * 
-   * 
-   * 
+   *
+   *
+   *
+   *
    * 学业辅导：
    *   数学
    *   英语
@@ -178,10 +178,9 @@ User.init(
       type: DataTypes.TEXT,
       allowNull: false,
       defaultValue: `{
-        "type": null,
-        "subject_id": [],
-        "days": [],
-        "hours": []
+        "start_time": null,
+        "end_time": null,
+        "subject_id": []
       }`,
       // allowNull: false,
       // validate: {

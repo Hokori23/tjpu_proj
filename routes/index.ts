@@ -1,3 +1,6 @@
-import User from './UserRouter';
+import UserRouter from './UserRouter';
+import LessonRouter from './LessonRouter';
+import SubjectRouter from './SubjectRouter';
+import SubscribeRouter from './SubscribeRouter';
 
-export { User };
+export { UserRouter, LessonRouter, SubjectRouter, SubscribeRouter };

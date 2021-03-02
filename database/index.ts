@@ -14,7 +14,7 @@ const init = () => {
     try {
       // await DB.authenticate();
       // console.log('Connection has been established successfully.');
-      await DB.sync({ alter: isDev });
+      // await DB.sync({ force: isDev });
       console.log('All models were synchronized successfully.');
       resolve(true);
     } catch (error) {

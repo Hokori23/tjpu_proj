@@ -72,7 +72,7 @@ Lesson.init(
       comment: '课堂内容'
     },
     start_time: {
-      type:DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.BIGINT,
       allowNull: false,
       validate: {
         notNull: {
@@ -85,7 +85,7 @@ Lesson.init(
       comment: '课堂开始时间'
     },
     end_time: {
-      type:DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.BIGINT,
       allowNull: false,
       validate: {
         notNull: {

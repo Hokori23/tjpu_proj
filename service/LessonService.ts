@@ -1,14 +1,16 @@
 import moment from 'moment';
 
-import { LessonAction as Action, UserAction } from '@action';
-import { Lesson } from '@vo';
-import { Restful, isUndef } from '@utils';
+import { LessonAction as Action, UserAction, SubscribeAction } from '@action';
+import { Lesson, Subscribe } from '@vo';
+import { Restful } from '@utils';
+import DB from '@database';
 
 /**
  * 开设课堂
  * @param { Lesson } lesson
  */
 const Create = async (lesson: Lesson): Promise<Restful> => {
+  const t = await DB.transaction();
   try {
     const user = await UserAction.Retrieve__ID(lesson.uid);
     if (!user) {
@@ -17,11 +19,17 @@ const Create = async (lesson: Lesson): Promise<Restful> => {
     if (user.role !== 1) {
       return new Restful(2, '你不是老师，没有权限开设课堂');
     }
-    return new Restful(
-      0,
-      `开设课堂成功`,
-      (await Action.Create(lesson)).toJSON()
+    lesson = await Action.Create(lesson, t);
+
+    await SubscribeAction.Create(
+      Subscribe.build({
+        uid: lesson.uid,
+        lesson_id: lesson.id
+      }),
+      t
     );
+    await t.commit();
+    return new Restful(0, `开设课堂成功`, lesson.toJSON());
   } catch (e) {
     return new Restful(99, `开设课堂失败, ${e.message}`);
   }
@@ -43,17 +51,122 @@ const Retrieve = async (
   subject_id: Array<number> = []
 ): Promise<Restful> => {
   try {
-    return new Restful(
-      0,
-      '查询课堂信息成功',
-      await Action.Retrieve__Page(
+    const values = await Promise.all([
+      Action.Retrieve__Page(
         Number(offset),
         Number(limit),
         sortBy,
         Boolean(descending),
         subject_id
-      )
-    );
+      ),
+      Action.Count__Page(subject_id)
+    ]);
+    const result = {
+      lessons: values[0],
+      count: values[1]
+    };
+    return new Restful(0, '查询课堂信息成功', result);
+  } catch (e) {
+    return new Restful(99, `查询课堂信息失败, ${e.message}`);
+  }
+};
+
+/**
+ * 查询课堂（时间限制）
+ * @param { number } offset
+ * @param { number } limit
+ * @param { string } sortBy
+ * @param { Array<number> } subject_id
+ * @param { boolean } descending
+ */
+const Retrieve__WithTimeRange = async (
+  offset: number,
+  limit: number,
+  start_time: number,
+  end_time: number,
+  subject_id: Array<number>, // 决定了优先顺序
+  sortBy?: string,
+  descending: boolean = false
+): Promise<Restful> => {
+  const subjectMap = {};
+  subject_id.forEach((id, idx) => {
+    subjectMap[id] = idx;
+  });
+  try {
+    const values = await Promise.all([
+      Action.Retrieve__Page__WithTimeRange(
+        Number(offset),
+        Number(limit),
+        Number(start_time),
+        Number(end_time),
+        subject_id,
+        sortBy,
+        Boolean(descending)
+      ),
+      Action.Count__Page__WithTimeRange(start_time, end_time, subject_id)
+    ]);
+    const result = {
+      lessons: values[0]
+        .map((lesson: any) => {
+          lesson = lesson?.toJSON();
+          return {
+            ...lesson,
+            formatted_start_time: moment(lesson?.start_time).format(
+              'YYYY/MM/YY HH:mm'
+            ),
+            formatted_end_time: moment(lesson?.end_time).format(
+              'YYYY/MM/YY HH:mm'
+            )
+          };
+        })
+        .sort((a, b) => subjectMap[a.subject_id] - subjectMap[b.subject_id]),
+      count: values[1]
+    };
+    return new Restful(0, '查询课堂信息成功', result);
+  } catch (e) {
+    console.log(e)
+    return new Restful(99, `查询课堂信息失败, ${e.message}`);
+  }
+};
+
+/**
+ * 查询某uid的查询课堂
+ * @param { number } uid
+ */
+const Retrieve__UID = async (
+  offset: number,
+  limit: number,
+  uid: number,
+  sortBy?: string,
+  descending: boolean = false
+): Promise<Restful> => {
+  try {
+    const values = await Promise.all([
+      Action.Retrieve__UID(
+        Number(offset),
+        Number(limit),
+        Number(uid),
+        sortBy,
+        Boolean(descending)
+      ),
+      Action.Count__UID(Number(uid))
+    ]);
+    const result = {
+      lessons: values[0].map((lesson: any) => {
+        lesson = lesson?.toJSON();
+        return {
+          ...lesson,
+          formatted_start_time: moment(lesson?.start_time).format(
+            'YYYY/MM/YY HH:mm'
+          ),
+          formatted_end_time: moment(lesson?.end_time).format(
+            'YYYY/MM/YY HH:mm'
+          )
+        };
+      }),
+      count: values[1]
+    };
+    return new Restful(0, '查询课堂信息成功', result);
   } catch (e) {
     return new Restful(99, `查询课堂信息失败, ${e.message}`);
   }
@@ -115,6 +228,8 @@ const Delete = async (id: number): Promise<Restful> => {
 export default {
   Create,
   Retrieve,
+  Retrieve__WithTimeRange,
+  Retrieve__UID,
   Edit,
   Delete
 };

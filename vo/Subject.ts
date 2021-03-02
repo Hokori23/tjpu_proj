@@ -41,12 +41,12 @@ Subject.init(
           msg: '课程类型不能为空'
         },
         notEmpty: {
-          msg: '课程类型不能为空不能为空'
+          msg: '课程类型不能为空'
         },
         max: 1,
         min: 0
       },
-      comment: '课程类型不能为空'
+      comment: '课程类型{ 0: 学业辅导, 1: 心理辅导 }'
     },
   },
   {

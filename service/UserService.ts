@@ -10,16 +10,26 @@ import { Restful, md5Crypto, isUndef } from '@utils';
 const Login = async (code: string, userInfo: any): Promise<Restful> => {
   try {
     const { session_key, openid, errmsg } = await WXAction.code2Session(code);
+    console.log(openid, errmsg, 'request from wx\'s server');
     if (isUndef(openid)) {
       throw new Error(errmsg);
     }
-    let user = User.build({ ...userInfo, openid });
+    const { nickName, avatarUrl, country, province, city, gender } = userInfo;
+    let user = {
+      nickName,
+      avatarUrl,
+      country,
+      province,
+      city,
+      gender,
+      openid
+    } as any;
 
     const existedUser = await Action.Retrieve__OpenID(openid);
     if (!existedUser) {
-      user = await Action.Create(user);
+      user = await Action.Create(User.build(user));
     } else {
-      user = existedUser;
+      user = await Action.Update(existedUser, user);
     }
     return new Restful(0, '登陆成功', user.toJSON());
   } catch (e) {
