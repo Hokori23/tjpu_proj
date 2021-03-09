@@ -1,4 +1,4 @@
-import { User } from '@vo';
+import { User } from '@models';
 
 /**
  * 添加用户

@@ -1,5 +1,5 @@
 import { isDef } from '@utils';
-import { Lesson, Subject, Subscribe, User } from '@vo';
+import { Lesson, Subject, Subscribe, User } from '@models';
 import { start } from 'repl';
 import { Op, Transaction } from 'sequelize';
 

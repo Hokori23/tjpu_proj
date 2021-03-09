@@ -3,7 +3,7 @@ import EXPRESS from 'express';
 import { LessonAction, SubscribeAction as Action } from '@action';
 import { checkIntegrity, isUndef, Restful } from '@utils';
 import moment from 'moment';
-import { Subscribe } from '@vo';
+import { Subscribe } from '@models';
 
 const ROUTER = EXPRESS.Router();
 

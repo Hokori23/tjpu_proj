@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "serve": "cross-env NODE_ENV=production node ./bin/www.js",
-    "dev": "cross-env NODE_ENV=development node ./bin/www.js",
+    "serve": "cross-env NODE_ENV=production node ./build/bin/www.js",
+    "dev": "npm run build && cross-env NODE_ENV=development node ./build/bin/www.js",
     "build": "ttsc",
     "build:watch": "ttsc -w"
   },
   "dependencies": {
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "express": "~4.16.1",
     "express-jwt": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
@@ -18,15 +18,15 @@
     "sequelize": "^6.3.5"
   },
   "devDependencies": {
-    "@types/node": "^14.11.4",
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@types/node": "^14.14.32",
     "@types/validator": "^13.1.0",
     "@zerollup/ts-transform-paths": "^1.7.18",
     "cross-env": "^7.0.2",
+    "husky": "^4.3.0",
     "ttypescript": "^1.5.12",
-    "typescript": "^4.0.3",
-    "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-conventional": "^11.0.0",
-    "husky": "^4.3.0"
+    "typescript": "^4.0.3"
   },
   "husky": {
     "hooks": {

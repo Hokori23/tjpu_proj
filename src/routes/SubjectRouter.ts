@@ -1,6 +1,6 @@
 import EXPRESS from 'express';
 
-import { Subject } from '@vo';
+import { Subject } from '@models';
 import { Restful } from '@utils';
 
 const ROUTER = EXPRESS.Router();

@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 import { LessonAction as Action, UserAction, SubscribeAction } from '@action';
-import { Lesson, Subscribe } from '@vo';
+import { Lesson, Subscribe } from '@models';
 import { Restful } from '@utils';
 import DB from '@database';
 

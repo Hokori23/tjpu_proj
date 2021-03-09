@@ -1,3 +1,37 @@
+import { BinaryToTextEncoding } from 'crypto';
+import { Options } from 'sequelize/types';
+
+const sequelizeOptions: Options = {
+  // 数据库类别
+  dialect: 'mysql',
+
+  // 主机，如IP 或 'localhost'
+  host: '101.201.239.229',
+
+  // 端口, MySQL默认端口3306
+  port: 3306,
+
+  dialectModule: require('mysql2'),
+  dialectOptions: {
+    // 字符集
+    charset: 'utf8mb4'
+  },
+  define: {
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_general_ci'
+  },
+
+  // 连接池
+  pool: {
+    max: 20,
+    min: 1,
+    idle: 30000,
+    acquire: 60000
+  },
+
+  // 时区
+  timezone: '+08:00'
+};
 const config = {
   /**
    *
@@ -5,7 +39,7 @@ const config = {
    *
    */
   serverConfig: {
-    port: '8003',
+    port: '8006',
     crypto: {
       // 每次分段加密的字符串最大长度（优先度高于cryptCount字段）
       onceCryptLength: 5,
@@ -14,7 +48,7 @@ const config = {
       // 返回值格式
       // 如果提供了 encoding，则返回字符串，否则返回 Buffer
       // 可选值：['hex', 'Base64', ...]
-      digest: 'hex',
+      digest: 'hex' as BinaryToTextEncoding,
       // 用于cipher对称加密生成密钥的密码
       password: 'test'
     },
@@ -53,30 +87,7 @@ const config = {
     password: 'zMAsKiaEiEWWx6pN',
 
     // options
-    options: {
-      // 数据库类别
-      dialect: 'mysql',
-
-      // 主机，如IP 或 'localhost'
-      host: '101.201.239.229',
-
-      // 端口, MySQL默认端口3306
-      port: '3306',
-
-      // 字符集
-      charset: 'utf8mb4',
-
-      // 连接池
-      pool: {
-        max: 20,
-        min: 1,
-        idle: 30000,
-        acquire: 60000
-      },
-
-      // 时区
-      timezone: '+08:00'
-    }
+    options: sequelizeOptions
   }
 };
 const { serverConfig } = config;
@@ -94,4 +105,5 @@ const DealWithURL = (url) => {
 };
 serverConfig.host = DealWithURL(serverConfig.host);
 
-module.exports = config;
+export { config };
+export default { config };

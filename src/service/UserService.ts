@@ -1,5 +1,5 @@
 import { UserAction as Action, WXAction } from '@action';
-import { User } from '@vo';
+import { User } from '@models';
 import { Restful, md5Crypto, isUndef } from '@utils';
 
 /**

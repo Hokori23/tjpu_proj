@@ -3,9 +3,8 @@ import CRYPTO from 'crypto';
 import chalk from 'chalk';
 import jwt from 'jsonwebtoken';
 
-import { serverConfig } from '@config';
-import { UserAction } from '@action';
-
+import { config } from 'tjpu_proj.config';
+const { serverConfig } = config;
 const cryptoConfig = serverConfig.crypto;
 
 /**

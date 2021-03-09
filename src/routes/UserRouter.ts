@@ -4,7 +4,7 @@ import moment from 'moment';
 import { UserService as Service } from '@service';
 
 import { Restful, checkIntegrity, SpawnJWT, isUndef, isDef } from '@utils';
-import { User } from '@vo';
+import { User } from '@models';
 
 const ROUTER = EXPRESS.Router();
 

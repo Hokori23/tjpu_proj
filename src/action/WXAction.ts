@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { serverConfig } from '@config';
-const { appid, secret } = serverConfig;
+import { config } from '@config';
+const { appid, secret } = config.serverConfig;
 
 /**
  * 获取openid和session_key

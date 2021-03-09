@@ -61,16 +61,4 @@ typings/
 .next
 
 
-action/**/*.js
-bin/**/*.js
-database/**/*.js
-middleware/**/*.js
-utils/**/*.js
-routes/**/*.js
-service/**/*.js
-vo/**/*.js
-mailer/**/*.js
-app.js
-
-# secure files
-middleware/jwt.ts
+build

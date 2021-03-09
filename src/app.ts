@@ -8,9 +8,9 @@ import {
   SubscribeRouter
 } from '@routes';
 import { JWTKEY, WHITE_LIST } from '@utils';
-import { serverConfig } from '@config';
+import { config } from '@config';
 
-const { appid, secret, baseURL } = serverConfig;
+const { appid, secret, baseURL } = config.serverConfig;
 
 const app = express();
 

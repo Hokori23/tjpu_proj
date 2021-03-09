@@ -1,7 +1,7 @@
-import { dataBaseConfig } from '@config';
+import { config } from 'tjpu_proj.config';
 import { Sequelize } from 'sequelize';
 
-const { database, user, password, options } = dataBaseConfig;
+const { database, user, password, options } = config.dataBaseConfig;
 const isDev = process.env.NODE_ENV === 'development';
 
 const DB = new Sequelize(database, user, password, {

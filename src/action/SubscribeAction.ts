@@ -1,4 +1,4 @@
-import { Lesson, Subscribe } from '@vo';
+import { Lesson, Subscribe } from '@models';
 import { Transaction } from 'sequelize/types';
 
 /**

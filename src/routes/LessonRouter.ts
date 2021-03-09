@@ -3,7 +3,7 @@ import EXPRESS from 'express';
 import { LessonService as Service } from '@service';
 
 import { Restful, checkIntegrity, isUndef, isDef } from '@utils';
-import { Lesson } from '@vo';
+import { Lesson } from '@models';
 
 const ROUTER = EXPRESS.Router();
 

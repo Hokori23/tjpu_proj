@@ -1,4 +1,4 @@
-import { Subject } from '@vo';
+import { Subject } from '@models';
 
 /**
  * 查询所有Subject

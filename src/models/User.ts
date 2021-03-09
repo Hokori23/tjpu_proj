@@ -7,7 +7,7 @@ import {
 } from 'sequelize';
 import DB from '@database';
 
-import { Socket } from '@vo';
+import { Socket } from '@models';
 
 class User extends Model {
   public id!: number | null;
