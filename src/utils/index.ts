@@ -3,7 +3,7 @@ import CRYPTO from 'crypto';
 import chalk from 'chalk';
 import jwt from 'jsonwebtoken';
 
-import { config } from 'tjpu_proj.config';
+import { config } from '@config';
 const { serverConfig } = config;
 const cryptoConfig = serverConfig.crypto;
 
@@ -25,7 +25,7 @@ const isDef = (v: any): boolean => {
  * 判断变量是否未定义
  * @param { object } v
  */
-const isUndef = (v: any): boolean => {
+const isUndef = (v: any): v is undefined | null => {
   return v === undefined || v === null;
 };
 
@@ -230,7 +230,11 @@ if (isUndef(jwtConfig.key)) {
 
 const JWTKEY = <string>md5Crypto(jwtConfig.key);
 
-const WHITE_LIST = [`${baseURL}/user/login`];
+const WHITE_LIST = [
+  `${baseURL}/user/login`,
+  `${baseURL}/lesson/retrieve`,
+  `${baseURL}/subject/retrieve`
+];
 
 const SpawnJWT = (openid: string, id: string) => {
   return (

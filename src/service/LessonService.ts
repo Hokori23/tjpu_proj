@@ -50,6 +50,10 @@ const Retrieve = async (
   descending: boolean = false,
   subject_id: Array<number> = []
 ): Promise<Restful> => {
+  const subjectMap = {};
+  subject_id.forEach((id, idx) => {
+    subjectMap[id] = idx;
+  });
   try {
     const values = await Promise.all([
       Action.Retrieve__Page(
@@ -62,7 +66,20 @@ const Retrieve = async (
       Action.Count__Page(subject_id)
     ]);
     const result = {
-      lessons: values[0],
+      lessons: values[0]
+        .map((lesson: any) => {
+          lesson = lesson?.toJSON();
+          return {
+            ...lesson,
+            formatted_start_time: moment(lesson?.start_time).format(
+              'YYYY/MM/YY HH:mm'
+            ),
+            formatted_end_time: moment(lesson?.end_time).format(
+              'YYYY/MM/YY HH:mm'
+            )
+          };
+        })
+        .sort((a, b) => subjectMap[a.subject_id] - subjectMap[b.subject_id]),
       count: values[1]
     };
     return new Restful(0, '查询课堂信息成功', result);
@@ -124,7 +141,7 @@ const Retrieve__WithTimeRange = async (
     };
     return new Restful(0, '查询课堂信息成功', result);
   } catch (e) {
-    console.log(e)
+    console.log(e);
     return new Restful(99, `查询课堂信息失败, ${e.message}`);
   }
 };

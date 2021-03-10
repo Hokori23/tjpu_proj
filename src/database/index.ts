@@ -1,4 +1,4 @@
-import { config } from 'tjpu_proj.config';
+import { config } from '@config';
 import { Sequelize } from 'sequelize';
 
 const { database, user, password, options } = config.dataBaseConfig;

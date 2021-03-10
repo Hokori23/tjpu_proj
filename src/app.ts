@@ -9,6 +9,7 @@ import {
 } from '@routes';
 import { JWTKEY, WHITE_LIST } from '@utils';
 import { config } from '@config';
+import { errorHandler } from '@middleware'
 
 const { appid, secret, baseURL } = config.serverConfig;
 
@@ -25,16 +26,10 @@ app.use(
     path: WHITE_LIST
   })
 );
-app.use((req, res, next) => {
-  console.log(req.url);
-  next();
-});
 app.use(`${baseURL}/user`, UserRouter);
 app.use(`${baseURL}/lesson`, LessonRouter);
 app.use(`${baseURL}/subject`, SubjectRouter);
 app.use(`${baseURL}/subscribe`, SubscribeRouter);
-app.use((err, req, res, next) => {
-  console.log(err);
-});
+app.use(errorHandler);
 
 module.exports = app;
